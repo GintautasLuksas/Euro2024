@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c4bddabc-86a9-4e58-971b-3be13c9d6524" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/scraping.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/raw/standings.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scrape wins.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scrape.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/uefa_team_names.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/uefa_team_statistics.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/uefa_wins_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/visualize.py" beforeDir="false" />
-    </list>
+    <list default="true" id="c4bddabc-86a9-4e58-971b-3be13c9d6524" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
