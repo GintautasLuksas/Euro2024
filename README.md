@@ -19,9 +19,9 @@ project/
 ├── src/
 │ ├── scrape_wins.py
 │ ├── uefa_team_data.csv
-│ └── uefa_team_names.csv
 │
 ├── app.py
+├── requirements.txt
 └── README.md
 
 
