@@ -12,13 +12,18 @@ def scrape_team_data(url):
 
     try:
         # Explicit wait for elements to be present
-        wait = WebDriverWait(driver, 7)
+        wait = WebDriverWait(driver, 10)
 
         # Scrape team names
         team_elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//span[@slot="primary"]')))
         team_names = []
-
-
+        exclude_strings = [
+            "UEFA Women's Under-17", "UEFA Under-19", "UEFA Under-17",
+            "UEFA Regions' Cup", "UEFA Futsal Champions League",
+            "UEFA Futsal EURO", "Futsal Finalissima",
+            "UEFA Women's Futsal EURO", "UEFA U-19 Futsal EURO",
+            "FIFA Futsal World Cup"
+        ]
         for element in team_elements:
             try:
                 team_name = element.text
@@ -29,7 +34,6 @@ def scrape_team_data(url):
                 team_name = team_elements[team_elements.index(element)].text
                 if team_name.strip() and team_name not in exclude_strings:
                     team_names.append(team_name)
-
 
         # Scrape team statistics
         stat_elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//span[@role="presentation"]')))
@@ -70,7 +74,7 @@ def organize_statistics(values, columns_per_team=8):
 
 def save_to_csv(data, filename, headers):
     # Skip the first 8 rows in data
-    data_to_write = data
+    data_to_write = data[0:]
 
     with open(filename, 'w', newline='', encoding='utf-8-sig') as csvfile:
         csvwriter = csv.writer(csvfile)
@@ -86,13 +90,7 @@ if __name__ == "__main__":
     team_names, stats_values = scrape_team_data(url)
 
     if team_names and stats_values:
-        exclude_strings = [
-            "UEFA Women's Under-17", "UEFA Under-19", "UEFA Under-17",
-            "UEFA Regions' Cup", "UEFA Futsal Champions League",
-            "UEFA Futsal EURO", "Futsal Finalissima",
-            "UEFA Women's Futsal EURO", "UEFA U-19 Futsal EURO",
-            "FIFA Futsal World Cup"
-        ]
+        # Organize statistics
         organized_data = organize_statistics(stats_values)
 
         # Combine team names with statistics
