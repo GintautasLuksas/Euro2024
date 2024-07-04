@@ -11,17 +11,27 @@ def scrape_team_data(url):
     driver.get(url)
 
     try:
-        wait = WebDriverWait(driver, 10)
+        # Explicit wait for elements to be present
+        wait = WebDriverWait(driver, 7)
 
+        # Scrape team names
         team_elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//span[@slot="primary"]')))
         team_names = []
+
+
         for element in team_elements:
             try:
-                team_names.append(element.text)
+                team_name = element.text
+                if team_name.strip() and team_name not in exclude_strings:
+                    team_names.append(team_name)
             except StaleElementReferenceException:
                 team_elements = driver.find_elements(By.XPATH, '//span[@slot="primary"]')
-                team_names.append(team_elements[team_elements.index(element)].text)
+                team_name = team_elements[team_elements.index(element)].text
+                if team_name.strip() and team_name not in exclude_strings:
+                    team_names.append(team_name)
 
+
+        # Scrape team statistics
         stat_elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//span[@role="presentation"]')))
         stats_values = []
         for element in stat_elements:
@@ -59,17 +69,20 @@ def organize_statistics(values, columns_per_team=8):
 
 
 def save_to_csv(data, filename, headers):
+    # Skip the first 8 rows in data
+    data_to_write = data
+
     with open(filename, 'w', newline='', encoding='utf-8-sig') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(headers)
-        csvwriter.writerows(data)
+        csvwriter.writerows(data_to_write)
     print(f"Data saved to {filename}")
 
 
 if __name__ == "__main__":
     url = 'https://www.uefa.com/euro2024/standings/'
 
-
+    # Scrape team names and statistics
     team_names, stats_values = scrape_team_data(url)
 
     if team_names and stats_values:
@@ -80,15 +93,16 @@ if __name__ == "__main__":
             "UEFA Women's Futsal EURO", "UEFA U-19 Futsal EURO",
             "FIFA Futsal World Cup"
         ]
-        cleaned_team_names = [name for name in team_names if name.strip() and name not in exclude_strings]
-
         organized_data = organize_statistics(stats_values)
 
+        # Combine team names with statistics
         combined_data = []
-        for i, team in enumerate(cleaned_team_names):
+        for i, team in enumerate(team_names):
             if i < len(organized_data):
                 combined_data.append([team] + organized_data[i])
 
+        # Define headers
         headers = ['Team', 'Played', 'Won', 'Drawn', 'Lost', 'Goals For', 'Goals Against', 'Goal Difference', 'Points']
 
+        # Save combined data to CSV
         save_to_csv(combined_data, 'uefa_team_data.csv', headers)
