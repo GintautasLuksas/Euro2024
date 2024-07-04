@@ -11,8 +11,7 @@ def scrape_team_data(url):
     driver.get(url)
 
     try:
-        # Explicit wait for elements to be present
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 12)
 
         # Scrape team names
         team_elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//span[@slot="primary"]')))
@@ -35,7 +34,6 @@ def scrape_team_data(url):
                 if team_name.strip() and team_name not in exclude_strings:
                     team_names.append(team_name)
 
-        # Scrape team statistics
         stat_elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//span[@role="presentation"]')))
         stats_values = []
         for element in stat_elements:
@@ -73,8 +71,7 @@ def organize_statistics(values, columns_per_team=8):
 
 
 def save_to_csv(data, filename, headers):
-    # Skip the first 8 rows in data
-    data_to_write = data[0:]
+    data_to_write = data[8:]
 
     with open(filename, 'w', newline='', encoding='utf-8-sig') as csvfile:
         csvwriter = csv.writer(csvfile)
@@ -86,11 +83,9 @@ def save_to_csv(data, filename, headers):
 if __name__ == "__main__":
     url = 'https://www.uefa.com/euro2024/standings/'
 
-    # Scrape team names and statistics
     team_names, stats_values = scrape_team_data(url)
 
     if team_names and stats_values:
-        # Organize statistics
         organized_data = organize_statistics(stats_values)
 
         # Combine team names with statistics
@@ -98,8 +93,10 @@ if __name__ == "__main__":
         for i, team in enumerate(team_names):
             if i < len(organized_data):
                 combined_data.append([team] + organized_data[i])
+            else:
+                combined_data.append([team] + [0] * 8)
 
-        # Define headers
+
         headers = ['Team', 'Played', 'Won', 'Drawn', 'Lost', 'Goals For', 'Goals Against', 'Goal Difference', 'Points']
 
         # Save combined data to CSV
